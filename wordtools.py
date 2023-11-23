@@ -7,10 +7,10 @@ Created on Sun Nov 19 11:01:49 2023
 
 import string
 import unicodedata as ud
-import spacy
+#import spacy
 from greek_stemmer import stemmer
 
-nlp = spacy.load("el_core_news_sm")
+#nlp = spacy.load("el_core_news_sm")
 
 def preprocess_greek_strings(strings):
     # Define a translation table to remove punctuation
@@ -35,14 +35,14 @@ def remove_words_from_string(input_string):
     return result_string
 
 def createstopwordslist():
-    stopwordsfile = open('stopwords1.txt', 'r')
+    stopwordsfile = open('stopwords1-UTF8.txt', 'r')
     data = stopwordsfile.read()
     return data.replace('\n', ' ').split(" ")
 
-def lematization(input_string):
-    doc = nlp(input_string)
-    intemediate = [token.lemma_ for token in doc]  
-    return ' '.join(intemediate)
+#def lematization(input_string):
+    #doc = nlp(input_string)
+    #intemediate = [token.lemma_ for token in doc]  
+    #return ' '.join(intemediate)
 
 def stemming(input_string):
     words = input_string.split()
