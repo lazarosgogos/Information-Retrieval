@@ -1,0 +1,9 @@
+processedspeech.csv
+Greek_Parliament_Proceedings_1989_2020.csv
+__pycache__/importcsv.cpython-310.pyc
+
+__pycache__/wordtools.cpython-310.pyc
+.ipynb_checkpoints/Queries-checkpoint.ipynb
+.ipynb_checkpoints/data_processing-checkpoint.ipynb
+.ipynb*
+__pycache__*
