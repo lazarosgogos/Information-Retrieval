@@ -97,13 +97,12 @@ def getSignatureOfSpeech(speech:str, weights: dict):
         # hash the given word
         hashedWord = _hashString(word)
         # convert it to an array of digits
-        i = _intToArrayOfDigits(hashedWord)
-        # print('digits of hashedWord: ',i)
-        # print('length  of hashed word:', len(i))
-        if (word not in weights.keys()):
-            weight = 0
+        digits = _intToArrayOfDigits(hashedWord)
+        
+        if (word not in weights.keys()): # if a word has no registered weight
+            weight = 0 # consider it irrelevant? or consider it super important? in which case weight = 1 
         else :
             weight = weights[word]
-        l = _applyFeatureWeight(i, l, weight)
+        l = _applyFeatureWeight(digits, l, weight)
     sig = _getFinalSignature(l)
     return sig
