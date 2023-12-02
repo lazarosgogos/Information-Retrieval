@@ -18,6 +18,7 @@ def _hashString(code: str, bits = 64):
     """
     code = code.encode('utf-8')
     i = int.from_bytes(hashlib.sha256(code).digest(), 'little') % 2**bits # we can handle 64 bits at most, at once
+    i = np.uint64(i)
     # because we are in 64-bit architecture computers
 
     return i
@@ -33,6 +34,9 @@ def _intToArrayOfDigits(i):
     :return digits: the array of the integer's digits
     """
     digits = [int(d) for d in (bin(i)[2:])]
+    if (len(digits) < 64):
+        for i in range(64 - len(digits)):
+            digits.insert(1, 0)
     return digits
 
 def _applyFeatureWeight(sig: list, l: list, w: int):
@@ -43,6 +47,8 @@ def _applyFeatureWeight(sig: list, l: list, w: int):
     # w for weight (tfidf probably) of each word
     # The following procedure is described in the PDF 
     # IR-Advanced-Hashing by prof A.P.
+    # print('length of l:', len(l))
+    # print('length of sig:', len(sig))
     l = [e+w if sig[idx] == 1 else e-w for idx, e in enumerate(l)] 
     return l
 """
@@ -92,7 +98,12 @@ def getSignatureOfSpeech(speech:str, weights: dict):
         hashedWord = _hashString(word)
         # convert it to an array of digits
         i = _intToArrayOfDigits(hashedWord)
-        weight = weights[word]
+        # print('digits of hashedWord: ',i)
+        # print('length  of hashed word:', len(i))
+        if (word not in weights.keys()):
+            weight = 0
+        else :
+            weight = weights[word]
         l = _applyFeatureWeight(i, l, weight)
     sig = _getFinalSignature(l)
     return sig
