@@ -8,6 +8,7 @@ Created on Sun Nov 19 11:01:49 2023
 import unicodedata as ud
 from greek_stemmer import stemmer
 
+# Remove punctuation from a string
 def preprocess_greek_strings(strings):
     # Define a translation table to remove punctuation
     greek_punctuation = ".,;:!?()[]{}<>-–—\"'«»…"
@@ -17,6 +18,7 @@ def preprocess_greek_strings(strings):
     
     return ud.normalize('NFD',a).lower().translate(d)
 
+# Remove the stopwords from a string
 def remove_words_from_string(input_string):
     # Split the input string into words
     words = input_string.split()
@@ -30,17 +32,21 @@ def remove_words_from_string(input_string):
 
     return result_string
 
+# Open the stopwords file and create a list of the stopwords
 def createstopwordslist():
     stopwordsfile = open('stopwords1-UTF8.txt', 'r')
     data = stopwordsfile.read()
     return data.replace('\n', ' ').split(" ")
 
+
+# Stemming of a string based on greek stemmer. It just removes the last syllable. 
 def stemming(input_string):
     words = input_string.split()
     for i, word in enumerate(words):
         words[i] = stemmer.stem_word(word, 'NNM')
     return ' '.join(words)
 
+# A method for removing punctuation, stopwords, stemming for a list of speeches
 def remove_pun_word_stem(speeches):
     rows =[]
     for row in speeches:
@@ -53,6 +59,7 @@ def remove_pun_word_stem(speeches):
             print(len(rows))
     return rows
 
+# Remove speeches that have less than 'size' characters
 def removesmallspeechesindex(dataset, size):
     rows = []
     for row in dataset.index:
@@ -60,6 +67,7 @@ def removesmallspeechesindex(dataset, size):
             rows.append(row)    
     return rows
 
+# A method for removing punctuation, stopwords, stemming for a string
 def process_string(query):
     query = query.replace("ς","σ")
     query = preprocess_greek_strings(query)
