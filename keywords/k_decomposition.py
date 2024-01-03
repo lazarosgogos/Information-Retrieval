@@ -53,16 +53,41 @@ def extract_top_words(graph, top_n):
 
 def getkeywords(speeches):
 
-    print('Creating graph of original data....')
+    #print('Creating graph of original data....')
     word_graph = create_word_graph(speeches)
 
     # print('Plot graph of original data....')
     # plot_word_graph(word_graph) # original speeches graph
 
-    print('Decomposition.....')
+    #print('Decomposition.....')
     k_core_result = k_core_decomposition(word_graph) # Perform decomposition 
 
     # print('Plot graph of processed data....')
     # plot_word_graph(k_core_result) # the words after decomposition
 
     return extract_top_words(k_core_result, top_n=100)
+
+def create_word_graph_one_speech(speech):
+    G = nx.Graph()
+    words = speech.split()
+    G.add_nodes_from(words) #making nodes
+
+    # Connect each word to its 10 neighbors (5 before and 5 after)
+    for word in words:
+        # List of neighbors for current word
+        neighbors = words[max(0, words.index(word) - 5):words.index(word)] + words[words.index(word) + 1:words.index(word) + 6]
+        G.add_edges_from(combinations([word] + neighbors, 2)) # Edges from combination of all pairs
+
+    G.remove_edges_from(nx.selfloop_edges(G)) # remove cycling references
+
+    return G
+
+
+def getkeywords_one_speech(speech):
+    word_graph = create_word_graph_one_speech(speech)
+
+    k_core_result = k_core_decomposition(word_graph) # Perform decomposition 
+
+    return extract_top_words(k_core_result, top_n=100)
+
+
