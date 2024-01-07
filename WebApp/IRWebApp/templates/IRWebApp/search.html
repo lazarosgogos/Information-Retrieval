@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Deep Search</title>
+</head>
+<body>
+    <h1> Deep Search</h1>
+    <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Enter search query">
+        <button type="submit">Search</button>
+    </form>
+    
+    {% if results %}
+        <table>
+            <tr>
+                <th>Result</th>
+            </tr>
+            {% for result in results %}
+            <tr>                
+                <td>{{ result.member_name }}</td>
+                <td>{{ result.political_party }}</td>
+                <td>{{ result.speech }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+   
+    
+</body>
+</html>

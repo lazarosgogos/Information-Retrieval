@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Similar Members</title>
+</head>
+<body>
+    <h1>Similar Members</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Member Name</th>
+                <th>Similar Members</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>{{ item.member_name }}</td>
+                    <td>{{ item.similar_members }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quick Search</title>
+</head>
+<body>
+    <h1> Quick Search</h1>
+    <form method="post" action="{% url 'quicksearch' %}">
+        {% csrf_token %}
+        <input type="text" name="query" placeholder="Enter search query">
+        <button type="submit">Search</button>
+    </form>
+    
+    {% if results %}
+        <table>
+            <tr>
+                <th>Result</th>
+            </tr>
+            {% for result in results %}
+            <tr> 
+                <td>{{ result.pk }}</td>               
+                <td>{{ result.member_name }}</td>
+                <td>{{ result.political_party }}</td>
+                <td>{{ result.speech }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+   
+    
+</body>
+</html>
