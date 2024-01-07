@@ -7,3 +7,7 @@ __pycache__/wordtools.cpython-310.pyc
 .ipynb_checkpoints/data_processing-checkpoint.ipynb
 .ipynb*
 __pycache__*
+processedspeech2.csv
+member_ch_vector.json
+inverted_catalog.json
+USV.pkl
