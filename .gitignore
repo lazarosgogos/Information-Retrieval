@@ -11,3 +11,9 @@ processedspeech2.csv
 member_ch_vector.json
 inverted_catalog.json
 USV.pkl
+inverted_catalogfinal_string.json
+member_similaritiesfinal.json
+members_keywordsfinal.csv
+party_keywordsfinal.csv
+db.sqlite3
+processedspeechfinal.csv
