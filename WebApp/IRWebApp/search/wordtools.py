@@ -7,6 +7,7 @@ Created on Sun Nov 19 11:01:49 2023
 
 import unicodedata as ud
 from greek_stemmer import stemmer
+import os
 
 # Remove punctuation from a string
 def preprocess_greek_strings(strings):
@@ -34,7 +35,7 @@ def remove_words_from_string(input_string):
 
 # Open the stopwords file and create a list of the stopwords
 def createstopwordslist():
-    stopwordsfile = open('IRWebApp\search\stopwords1.txt', 'r')
+    stopwordsfile = open(f'IRWebApp{os.sep}search{os.sep}stopwords1.txt', 'r')
     data = stopwordsfile.read()
     return data.replace('\n', ' ').split(" ")
 

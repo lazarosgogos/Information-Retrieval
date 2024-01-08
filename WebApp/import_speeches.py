@@ -22,5 +22,5 @@ def import_data_from_csv(csv_file_path):
             )
 
 # Execute the function
-csv_file_path = 'processedspeechfinal.csv'
+csv_file_path = '../processedspeechfinal.csv'
 import_data_from_csv(csv_file_path)
