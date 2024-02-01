@@ -18,7 +18,6 @@ class MemberKeywords(models.Model):
     year = models.IntegerField()
     keywords = models.TextField()
 
-
 class SimilarMembers(models.Model):
     member_name = models.CharField(max_length = 100)
     similar_members = models.TextField()
@@ -27,3 +26,6 @@ class InvertedCatalog(models.Model):
     word = models.CharField(max_length = 100)
     speech_indices = models.TextField()
 
+class SVD(models.Model):
+    
+    pass

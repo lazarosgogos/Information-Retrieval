@@ -35,7 +35,7 @@ def remove_words_from_string(input_string):
 
 # Open the stopwords file and create a list of the stopwords
 def createstopwordslist():
-    stopwordsfile = open(f'IRWebApp{os.sep}search{os.sep}stopwords1.txt', 'r')
+    stopwordsfile = open(f'IRWebApp{os.sep}search{os.sep}stopwords1-UTF8.txt', 'r')
     data = stopwordsfile.read()
     return data.replace('\n', ' ').split(" ")
 
