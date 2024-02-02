@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SVD</title>
+</head>
+<body>
+    <h1>Speeches, concepts and their keywords</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Speech ID</th>
+                <th>Keywords</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                <tr>
+                    <td>{{ item.speech_indices }}</td>
+                    <td>{{ item.speech_keywords }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

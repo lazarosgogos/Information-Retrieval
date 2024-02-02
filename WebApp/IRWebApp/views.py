@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from IRWebApp.models import PartyKeywords, SimilarMembers, MemberKeywords, Speech, InvertedCatalog
+from IRWebApp.models import PartyKeywords, SimilarMembers, MemberKeywords, Speech, InvertedCatalog, SVD, SimilarSpeeches
 import pandas as pd
 from .forms import SearchForm
 from .search import query_copy
@@ -87,3 +87,14 @@ def quick_search_speeches(request):
         ordered_results = sorted(results_list, key=lambda x: final_search_indices.index(x.pk))
     
     return render(request, 'IRWebApp/quicksearch.html', {'results': ordered_results})
+
+
+def svd(request):
+    data = SVD.objects.all()
+
+    return render(request, 'IRWebApp/svd.html', {'data': data})
+
+def similar_speeches(request):
+    data = SimilarSpeeches.objects.all()
+
+    return render(request, 'IRWebApp/similar_speeches.html', {'data': data})

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from IRWebApp.views import keywords_party, similarities_members, keywords_member, search_speeches, quick_search_speeches, home
+from IRWebApp.views import keywords_party, similarities_members, keywords_member, search_speeches, quick_search_speeches, home, svd, similar_speeches
 
 urlpatterns = [
     path('', home, name = 'home'),
@@ -24,5 +24,7 @@ urlpatterns = [
     path('similarities/', similarities_members, name = 'similarities_members'),
     path('keywords_member/', keywords_member, name = 'keywords_member'),
     path('search/', search_speeches, name = 'search'),
-    path('quicksearch/', quick_search_speeches, name = 'quicksearch')
+    path('quicksearch/', quick_search_speeches, name = 'quicksearch'),
+    path('svd/', svd, name='svd'),
+    path('similar_speeches/', similar_speeches, name='similar_speeches')
 ]

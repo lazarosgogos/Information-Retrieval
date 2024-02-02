@@ -27,5 +27,11 @@ class InvertedCatalog(models.Model):
     speech_indices = models.TextField()
 
 class SVD(models.Model):
+    speech_indices = models.IntegerField()
+    speech_keywords = models.TextField()
+
+class SimilarSpeeches(models.Model):
+    speech_index = models.IntegerField()
+    speech_signature = models.IntegerField()
     
-    pass
+    
