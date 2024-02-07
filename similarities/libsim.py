@@ -46,7 +46,7 @@ def _applyFeatureWeight(sig: list, l: list, w: int):
     # sig for signature of 1s and 0s
     # w for weight (tfidf probably) of each word
     # The following procedure is described in the PDF 
-    # IR-Advanced-Hashing by prof A.P.
+    # IR-Advanced-Hashing by prof Apostolos Papadopoulos
     # print('length of l:', len(l))
     # print('length of sig:', len(sig))
     l = [e+w if sig[idx] == 1 else e-w for idx, e in enumerate(l)] 

@@ -14,6 +14,8 @@
         <input type="number" name="k" placeholder="k similar speeches">
         <button type="submit">Search</button>
     </form>
+    <!-- Uncomment the code below to unveil the Create M-Tree button
+         in case you want to recreate the M-Tree from scratch. -->
     <!-- <h1>Create Tree</h1>
     <form method="post" action="{% url 'similar_speeches' %}">
         {% csrf_token %}
@@ -30,10 +32,11 @@
             </tr>
         </thead>
         <tbody>
+            <p>Some row is the initial speech, for which we're looking for similar ones. There is no promise of order.</p>
             {% for item in data %}
             <tr>
                 <td>{{ item.member_name }}</td>
-                <td>{{ item.speech }}</td>
+                <td>{{ item.processed_speech }}</td>
             </tr>
             {% endfor %}
         </tbody>

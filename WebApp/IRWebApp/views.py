@@ -114,6 +114,7 @@ def similar_speeches(request):
             k = int(request.POST.get('k'))
             # search_query = request.POST.get('query')
             indices = tree_search.get_similar_speeches(requested_speech_id, k)
+            indices.insert(0, requested_speech_id)
             indices = [i+1 for i in indices] # +1 because the indexes differ 
     # print(len(indices))
     # Get the entries of the queryset with pk = the indices of the search sorted.
