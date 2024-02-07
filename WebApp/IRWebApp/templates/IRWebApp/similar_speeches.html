@@ -1,26 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Similar Members</title>
+    <title>Similar Speeches</title>
 </head>
+
 <body>
-    <h1>Similar Members</h1>
+    <h1>Find similar speech</h1>
+    <form method="post" action="{% url 'similar_speeches' %}">
+        {% csrf_token %}
+        <input type="number" name="requested_speech_id" placeholder="Enter speech ID" required>
+        <input type="number" name="k" placeholder="k similar speeches">
+        <button type="submit">Search</button>
+    </form>
+
+    {% if data %}
+    <h1>Similar Speeches</h1>
     <table>
         <thead>
             <tr>
-                <th>Member Name</th>
-                <th>Similar Members</th>
+                <th>Speech ID</th>
+                <th>Speech</th>
             </tr>
         </thead>
         <tbody>
             {% for item in data %}
-                <tr>
-                    <td>{{ item.member_name }}</td>
-                    <td>{{ item.similar_members }}</td>
-                </tr>
+            <tr>
+                <td>{{ item.speech_id }}</td>
+                <td>{{ item.speech }}</td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
+    <!-- <table>
+        <tr>
+            <th>Result</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.member_name }}</td>
+            <td>{{ result.political_party }}</td>
+            <td>{{ result.speech }}</td>
+        </tr>
+        {% endfor %}
+    </table> -->
+    {% endif %}
+
+
 </body>
+
 </html>

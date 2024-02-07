@@ -14,7 +14,7 @@ def import_pkl_data():
         
         for docId, keywords in data.items():
             SVD.objects.create(
-                speech_indices =  docId,
+                speech_indices =  docId, # this should be named speech_index not indices
                 speech_keywords = keywords
             )
             

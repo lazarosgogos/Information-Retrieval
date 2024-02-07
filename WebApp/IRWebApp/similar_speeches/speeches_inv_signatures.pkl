@@ -1,0 +1,1 @@
+/home/lazaros/anaconda/IRProject/speeches_inv_signatures.pkl

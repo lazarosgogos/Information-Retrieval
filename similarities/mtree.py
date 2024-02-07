@@ -72,7 +72,8 @@ different object by the tree.
 
 This implementation is memory only. The tree is not stored on disk.
 This may be a problem if the objects you store are large (pictures, sound,...)
-Although the tree itself resides in memory you can store the objects it contains on disk (or online,...). For example the objects you pass to the tree could
+Although the tree itself resides in memory you can store the objects it contains on disk (or online,...). 
+For example the objects you pass to the tree could
 be path to files; the d function would load the files from disk to perform the
 comparisons.
 

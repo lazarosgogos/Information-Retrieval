@@ -3,6 +3,7 @@ from IRWebApp.models import PartyKeywords, SimilarMembers, MemberKeywords, Speec
 import pandas as pd
 from .forms import SearchForm
 from .search import query_copy
+from .similar_speeches import tree_search
 
 # Create your views here.
 
@@ -10,7 +11,7 @@ def home(request):
     return render(request, 'IRWebApp/home.html')
 
 def keywords_party(request):
-    data = PartyKeywords.objects.all()  
+    data = PartyKeywords.objects.all()
 
     #data = data.filter(year = 2001)
     #print(type(data))
@@ -96,5 +97,21 @@ def svd(request):
 
 def similar_speeches(request):
     data = SimilarSpeeches.objects.all()
+    # speeches = SimilarSpeeches.objects.all().values_list('speech', flat=True)
+    # speeches = list(speeches)
+    
+    indices = []
+    if request.method == "POST":
+        requested_speech_id = int(request.POST.get('requested_speech_id')) 
+        k = int(request.POST.get('k'))
+        # search_query = request.POST.get('query')
+        indices = tree_search.get_similar_speeches(requested_speech_id, k)
+        indices = [i+1 for i in indices] # +1 because the indexes differ 
+    
+    # Get the entries of the queryset with pk = the indices of the search sorted.
+    data = SimilarSpeeches.objects.all().filter(pk__in = indices)
+    data_list = list(data)
 
-    return render(request, 'IRWebApp/similar_speeches.html', {'data': data})
+    
+    # return render(request, 'IRWebApp/search.html', {'results': ordered_results})
+    return render(request, 'IRWebApp/similar_speeches.html', {'data': data_list})

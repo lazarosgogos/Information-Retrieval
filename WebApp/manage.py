@@ -2,7 +2,7 @@
 """Django's command-line utility for administrative tasks."""
 import os
 import sys
-
+from IRWebApp.similar_speeches.tree_search import hamming_distance
 
 def main():
     """Run administrative tasks."""
@@ -19,4 +19,6 @@ def main():
 
 
 if __name__ == "__main__":
+
     main()
+

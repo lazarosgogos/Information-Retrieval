@@ -31,7 +31,7 @@ class SVD(models.Model):
     speech_keywords = models.TextField()
 
 class SimilarSpeeches(models.Model):
-    speech_index = models.IntegerField()
-    speech_signature = models.IntegerField()
+    speech_id = models.IntegerField() # the index of the speech
+    speech = models.TextField() # the speech itself
     
     
