@@ -14,20 +14,25 @@
         <input type="number" name="k" placeholder="k similar speeches">
         <button type="submit">Search</button>
     </form>
-
+    <!-- <h1>Create Tree</h1>
+    <form method="post" action="{% url 'similar_speeches' %}">
+        {% csrf_token %}
+        <input type="hidden" name="create_m_tree">
+        <button type="submit">Create Trees</button>
+    </form> -->
     {% if data %}
     <h1>Similar Speeches</h1>
     <table>
         <thead>
             <tr>
-                <th>Speech ID</th>
+                <th>Member name</th>
                 <th>Speech</th>
             </tr>
         </thead>
         <tbody>
             {% for item in data %}
             <tr>
-                <td>{{ item.speech_id }}</td>
+                <td>{{ item.member_name }}</td>
                 <td>{{ item.speech }}</td>
             </tr>
             {% endfor %}

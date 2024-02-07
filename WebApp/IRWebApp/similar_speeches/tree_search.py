@@ -9,16 +9,16 @@ def hamming_distance(a: int, b:int):
         return int.bit_count(a ^ b) # requires python 3.10
 
 def get_similar_speeches(speechID, k=4):
-    with open('sim_tree.pkl','rb') as fo:
+    with open('sim_tree_2.pkl','rb') as fo:
         tree = pickle.load(fo) # the M-Tree
             # where the speeches are grouped together
             # and searches can take place
             # to find similar ones!
-    with open('speeches_inv_signatures.pkl', 'rb') as fo:
+    with open('speeches_inv_signatures_2.pkl', 'rb') as fo:
         speeches_inv_signatures = pickle.load(fo) # dictionary
         # key: the signature of some speech
         # value: a LIST of which speeches have this signature
-    with open('speeches_signatures.pkl', 'rb') as pkl_file:
+    with open('speeches_signatures_2.pkl', 'rb') as pkl_file:
         speeches_signatures = pickle.load(pkl_file) # a dictionary
         # key: the index of the speech
         # value: the signature of the speech

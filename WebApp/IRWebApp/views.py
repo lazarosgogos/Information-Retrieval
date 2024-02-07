@@ -3,7 +3,7 @@ from IRWebApp.models import PartyKeywords, SimilarMembers, MemberKeywords, Speec
 import pandas as pd
 from .forms import SearchForm
 from .search import query_copy
-from .similar_speeches import tree_search
+from .similar_speeches import tree_search, tree_create
 
 # Create your views here.
 
@@ -41,7 +41,7 @@ def search_speeches(request):
     if request.method == "POST":
         search_query = request.POST.get('query')
         indices = query_copy.search2(search_query, processed_speeches)
-        indices = [i+1 for i in indices] # +1 because the indexes differ 
+        indices = [i+1 for i in indices] # +1 because the indexes differ
     
     # Get the entries of the queryset with pk = the indices of the search sorted.
     results = Speech.objects.all().filter(pk__in = indices)
@@ -96,20 +96,28 @@ def svd(request):
     return render(request, 'IRWebApp/svd.html', {'data': data})
 
 def similar_speeches(request):
-    data = SimilarSpeeches.objects.all()
+    # data = SimilarSpeeches.objects.all()
     # speeches = SimilarSpeeches.objects.all().values_list('speech', flat=True)
     # speeches = list(speeches)
     
     indices = []
     if request.method == "POST":
-        requested_speech_id = int(request.POST.get('requested_speech_id')) 
-        k = int(request.POST.get('k'))
-        # search_query = request.POST.get('query')
-        indices = tree_search.get_similar_speeches(requested_speech_id, k)
-        indices = [i+1 for i in indices] # +1 because the indexes differ 
-    
+        if ('create_m_tree' in request.POST):
+            print('Loading processed speeches only..')
+            processed_speeches = Speech.objects.all().values_list('processed_speech', flat=True)
+            processed_speeches = list(processed_speeches)
+            print('Done loading processed speeches. Proceeding to create the M-Tree')
+            tree_create.create_M_Tree(processed_speeches)
+            
+        else:
+            requested_speech_id = int(request.POST.get('requested_speech_id')) 
+            k = int(request.POST.get('k'))
+            # search_query = request.POST.get('query')
+            indices = tree_search.get_similar_speeches(requested_speech_id, k)
+            indices = [i+1 for i in indices] # +1 because the indexes differ 
+    # print(len(indices))
     # Get the entries of the queryset with pk = the indices of the search sorted.
-    data = SimilarSpeeches.objects.all().filter(pk__in = indices)
+    data = Speech.objects.all().filter(pk__in = indices)
     data_list = list(data)
 
     

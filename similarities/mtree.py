@@ -218,7 +218,8 @@ class MTree(object):
         Add all the elements in the M-tree
         """
         #TODO: implement using the bulk-loading algorithm
-        for obj in iterable:
+        from tqdm import tqdm
+        for obj in tqdm(iterable):
             self.add(obj)
 
     def search(self, query_obj, k=1):
