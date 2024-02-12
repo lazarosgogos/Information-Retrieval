@@ -1,156 +1,201 @@
+# code found originally from 
+# https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/
+# https://github.com/pinecone-io/examples/tree/master/learn/search/faiss-ebook/locality-sensitive-hashing-traditional
 import numpy as np
-import scipy as sp
-from random import shuffle
-speeches = ["this is some speech related to animal rights", 
+from itertools import combinations
+import pandas as pd
+from sklearn.metrics.pairwise import cosine_similarity
+
+sentences = ["this is some speech related to animal rights", 
             "yet some other speech about human rights", 
             "blue shark in the ocean waters",]
 
-# print(speeches[0])
-
-def shingle(text: str, ):
-    """
-    This function takes a string of text, tokenizes it
-    and returns a set of shingles/k-grams
-    text: the text we want to extract shingles from
-    return: a set of shingles/k-grams
-    """
-    if (type(text) is list):
-        return set(text)
-    tokens = text.split(' ') # tokenize text
+def build_shingles(sentence: str, k: int):
+    """Take a sentence and create shingles of size k out of it."""
+    shingles = []
+    tokens = sentence.split(' ')
+    # for i in range(len(sentence) - k):
+    #     shingles.append(sentence[i:i+k])
     return set(tokens)
+    return set(shingles) # shingles on such a big file should be illegal
 
-# print(shingle(speeches[0]))
-
-# somehow we need to do one-hot-encoding now
-# first let's do it the simple way
-
-def build_vocabulary(*shingles):
-    """
-    Build a vocabulary (a set) based on all available tokens/words
-    shingles: an iterable with tokens as elements
-    return: a vocabulary (a set) of all possible tokens 
-    """
-    vocab = set()
-    for shingle_set in shingles:
-        vocab = vocab.union(shingle_set)
+def build_vocab(shingle_sets: list):
+    """Take all the shingles available and create a vocabulary (a dictionary) out of them"""
+    # convert list of shingle sets into single set
+    full_set = {item for set_ in shingle_sets for item in set_}
+    vocab = {}
+    for i, shingle in enumerate(list(full_set)):
+        vocab[shingle] = i
     return vocab
 
-a = shingle(speeches[0])
-b = shingle(speeches[1])
-c = shingle(speeches[2])
+def one_hot(shingles: set, vocab: dict):
+    """Given a vocab and a shingle set, create an array of zeros,
+    and put one whereever a shingle appears in the vocab."""
+    vec = np.zeros(len(vocab))
+    for shingle in shingles:
+        idx = vocab[shingle]
+        vec[idx] = 1
+    return vec
 
-voc = build_vocabulary(a,b,c)
+def minhash_arr(vocab: dict, resolution: int):
+    """Perform permutations in order to create a minhash.
+    Return an integer value representing the hash."""
+    length = len(vocab.keys())
+    arr = np.zeros((resolution, length))
+    for i in range(resolution):
+        permutation = np.random.permutation(len(vocab)) + 1
+        arr[i, :] = permutation.copy()
+    return arr.astype(int)
 
-print(voc)
-# now, one-hot-encoding time
-# simple first
-
-def one_hot_encode(shingle_set: set, vocab: list):
-    """
-    For the given shingle set and the global vocabulary, 
-    return a SPARSE?? vector with ones whereever 
-    an element appears on the vocabulary.
-    TODO doesn't this require an ordered vocabulary?
-        might be possible if done with a dictionary
-        of the sort {key: [list as value]}
-        (where key is the)
-        or each value of a returned iterable (possibly set) 
-        can be a position of a one
-        no, each key will be a position/token in the vocabulary
-        and each value 
-    """
-    
-    if type(vocab) is not list:
-        raise TypeError('vocab must first be turned into a list!')
-    
-    # this can also be achieved with numpy/scipy arrays !!!
-    onehot = [1 if word in shingle_set else 0 for word in vocab]
-    return onehot
-
-voc = list(voc) # very importan line!!
-a_onehot = one_hot_encode(a, voc)
-b_onehot = one_hot_encode(b, voc)
-c_onehot = one_hot_encode(c, voc)
-print(a_onehot)
-
-def prime_generator(n=300):
-    """
-    n is the number of prime numbers we want to generate,
-    and by extension the number of permutations we're going to perform,
-    or in other words the size of our minhash value in bits (?)
-    """
-    primes = []
-    num = 2
-    while len(primes) < n:
-        is_prime = True
-        for prime in primes:
-            if num % prime == 0:
-                is_prime = False
-                break
-        if is_prime:
-            primes.append(num)
-            yield num
-        num += 1
-
-# Generate the first 300 prime numbers
-# prime_list = list(prime_generator())
-n=200
-
-# now it's time to MINHASH
-def create_hash_function(vocab: list):
-    """Function that creates the hash vector/function"""
-    hash_ex = list(range(1, len(vocab) + 1))
-    shuffle(hash_ex)
-    return hash_ex
-    # return ((a * index + b) * prime) % size
-
-def build_hashes_function(vocab, nbits=200):
-    """Function for building multiple minhash vectors"""
-    hashes = []
-    for _ in range(nbits):
-        hashes.append(create_hash_function(vocab))
-    return hashes
-
-_hashes = build_hashes_function(voc, 20)
-print(_hashes[0])
-
-def create_hash(onehot_vector: list, hashes: list, vocab: list):
-    """This functions creates our signature"""
-    signature = []
-    for func in hashes:
-        for i in range(1, len(vocab)+ 1):
-            idx = func.index(i)
-            signature_val = onehot_vector[idx]
-            if signature_val == 1:
-                signature.append(idx)
-                break
+def get_signature(minhash, vector):
+    """Create the signature based on the minhash value.
+    This is done by finding out the minimum value in each hash vector
+    where the value is 1 at the same time."""
+    # get index locations of every 1 value in vector
+    idx = np.nonzero(vector)[0].tolist()
+    # use index locations to pull only +ve positions in minhash
+    shingles = minhash[:, idx]
+    # find minimum value in each hash vector
+    signature = np.min(shingles, axis=1)
     return signature
 
-a_hashed = create_hash(a_onehot, _hashes, voc)
-b_hashed = create_hash(b_onehot, _hashes, voc)
-c_hashed = create_hash(c_onehot, _hashes, voc)
 
-print(a_hashed)
 
-def jaccard(x: set,y: set):
-    return len(x.intersection(y)) / len(x.union(y))
+def jaccard(a: set, b: set):
+    return len(a.intersection(b)) / len(a.union(b))
 
-print('Jaccard a,b:', jaccard(set(a), set(b)), jaccard(set(a_hashed), set(b_hashed)))
-print('Jaccard c,b:', jaccard(set(c), set(b)), jaccard(set(c_hashed), set(b_hashed)))
+class LSH:
+    buckets = []
+    counter = 0
+    def __init__(self, b):
+        self.b = b
+        for i in range(b):
+            self.buckets.append({})
 
-def split_vector(signature, b:int):
-    assert len(signature) % b == 0
-    r = int(len(signature) / b)
-    # code splitting signature in b parts
-    subvecs = []
-    for i in range(0, len(signature), r):
-        subvecs.append(signature[i : i+r])
-    return subvecs
+    def make_subvecs(self, signature):
+        l = len(signature)
+        assert l % self.b == 0
+        r = int(l / self.b)
+        # break signature into subvectors
+        subvecs = []
+        for i in range(0, l, r):
+            subvecs.append(signature[i:i+r])
+        return np.stack(subvecs)
 
-band_a = split_vector(a_hashed, 10)
-band_b = split_vector(b_hashed, 10)
-band_c = split_vector(c_hashed, 10)
-print('band b:',band_b)
+    def add_hash(self, signature):
+        subvecs = self.make_subvecs(signature).astype(str)
+        for i, subvec in enumerate(subvecs):
+            subvec = ','.join(subvec)
+            if subvec not in self.buckets[i].keys():
+                self.buckets[i][subvec] = []
+            self.buckets[i][subvec].append(self.counter)
+        self.counter += 1
 
-# now let's roll 
-# https://www.pinecone.io/learn/series/faiss/locality-sensitive-hashing/
+    def check_candidates(self):
+        candidates = []
+        for bucket_band in self.buckets:
+            keys = bucket_band.keys()
+            for bucket in keys:
+                hits = bucket_band[bucket]
+                if len(hits) > 1:
+                    candidates.extend(combinations(hits, 2))
+        return set(candidates)
+
+class MyVector:
+    vec = set()
+    def __init__(self, *numbers):
+        self.vec = set(numbers)
+
+def cluster_speeches(sentences, k=8, b=20, debug=False):
+    """k is the shingle size"""
+    # k = 8  # shingle size
+
+    # build shingles
+    shingles = []
+    for sentence in sentences:
+        shingles.append(build_shingles(sentence, k))
+
+    # build vocab
+    vocab = build_vocab(shingles)
+
+    # one-hot encode our shingles
+    shingles_1hot = []
+    for shingle_set in shingles:
+        shingles_1hot.append(one_hot(shingle_set, vocab))
+    # stack into single numpy array
+    shingles_1hot = np.stack(shingles_1hot)
+    if debug:
+        print('shingles_1hot shape:',shingles_1hot.shape)
+
+
+    arr = minhash_arr(vocab, 100)
+
+    signatures = []
+
+    # create signatures
+    for vector in shingles_1hot:
+        signatures.append(get_signature(arr, vector))
+
+    # merge signatures into single array
+    signatures = np.stack(signatures)
+    if debug:
+        print('signatures shape:',signatures.shape)
+
+
+    lsh = LSH(b)
+
+    # create signatures and add them to LSH
+    for signature in signatures:
+        lsh.add_hash(signature)
+    
+    # if debug:
+    #     print('lsh.buckets:',lsh.buckets)
+    
+    candidate_pairs = lsh.check_candidates()
+
+    if debug:
+        print('length of candidate_pairs', len(candidate_pairs))
+        print('Peek at first 5 candidate pairs', list(candidate_pairs)[:5])
+
+    pairs = pd.DataFrame({
+        'x': [],
+        'y': [],
+        'jaccard': [],
+        'cosine': [],
+        'candidate': []
+    })
+
+    data_len = shingles_1hot.shape[0]
+    chosen = set()
+    # take random sample of pairs
+    sample_size = 10
+    for _ in range(sample_size):
+        x, y = np.random.choice(data_len, 2)
+        if x == y or (x, y) in chosen: continue
+        chosen.add((x, y))
+        vector_x = signatures[x]
+        vector_y = signatures[y]
+        candidate = 1 if (x, y) in candidate_pairs else 0
+        cosine = cosine_similarity([vector_x], [vector_y])[0][0]
+        pairs = pd.concat([pairs, pd.DataFrame([{
+                'x': x,
+                'y': y,
+                'jaccard': jaccard(set(vector_x), set(vector_y)),
+                'cosine': cosine,
+                'candidate': candidate
+            }])], ignore_index=True)
+        # pairs = pairs.append({
+        #         'x': x,
+        #         'y': y,
+        #         'jaccard': jaccard(set(vector_x), set(vector_y)),
+        #         'cosine': cosine,
+        #         'candidate': candidate
+        #     }, ignore_index=True)
+
+    # add a normalized cosine column for better alignment
+    cos_min = pairs['cosine'].min()
+    cos_max = pairs['cosine'].max()
+    pairs['cosine_norm'] = (pairs['cosine'] - cos_min) / (cos_max - cos_min)
+    if debug:
+        # print(pairs.head())
+        print(pairs[pairs['candidate'] != 0])
