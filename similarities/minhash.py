@@ -16,6 +16,7 @@ class LSH:
     buckets = [] # will this variable become huge?
     bucket = defaultdict(set)
     candidate_pairs = list()
+    vocab = {}
     def __init__(self, sentences, b=5, size_of_hash_functions=20):
         self.sentences = sentences
         self.b = b
@@ -43,6 +44,10 @@ class LSH:
             vocab[shingle] = i
         return vocab
 
+    def expand_vocab(self, shingle_set):
+        for i, shingle in enumerate(shingle_set):
+            self.vocab[shingle] = i
+
     def one_hot(self, shingles: set, vocab: dict):
         """Given a vocab and a shingle set, create an array of zeros,
         and put one whereever a shingle appears in the vocab.
@@ -66,7 +71,9 @@ class LSH:
 
     def build_hashes(self, vocab: dict, n_hash_functions:int):
         """
-        NOTE: The following matrix should be Transposed! it works the same this way though
+        NOTE: The following matrix should be Transposed! 
+            it works the same this way though
+        
         Create a 2D array of hash values (random permutations of arrays) like so:
         Say we have a vocabulary of size 5 and we want 2 hash functions
         [[3 2]
@@ -150,15 +157,37 @@ class LSH:
                 self.candidate_pairs.extend(combinations(combs, 2))
     
     def perform_LSH(self):
-        shingles_set = [self.build_shingles(sentence) for sentence in self.sentences]
-        vocab = self.build_vocab(shingles_set)
-        onehots = [self.one_hot(shingle, vocab) for shingle in shingles_set]
+        print('creating shingles and expanding vocab')
+        for sentence in self.sentences:
+            shingles_set = self.build_shingles(sentence)
+            self.expand_vocab(shingles_set)
+        # 13 seconds to create shingles, 7 GB of RAM
+        # shingles_set = [self.build_shingles(sentence) for sentence in self.sentences]
         
-        hashes = self.build_hashes(vocab, self.size_of_hash_functions)
+        print('done.')
+        print('creating hashes')
+        hashes = self.build_hashes(self.vocab, self.size_of_hash_functions)
+        print('done.')
 
-        signatures = [self.get_signature(hashes, onehots[i]) for i in range(len(onehots))]
-        print(signatures)
+        print('creating signatures')
+        signatures = []
+        for sentence in self.sentences:
+            shingles_set = self.build_shingles(sentence)
+            # print('printing shingles set',shingles_set)
+            # for shingle in shingles_set:
+            onehot = self.one_hot(shingles_set, self.vocab)
+            signatures.append(self.get_signature(hashes, onehot))
+        # vocab = self.build_vocab(shingles_set)
+        # takes 8 minutes to calculate all the signatures
+        # when we have b=2 and size_of_hash_functions=6
+        print('done')
+        
+        # onehots = [self.one_hot(shingle, self.vocab) for shingle in shingles_set]
+        
+
+        # signatures = [self.get_signature(hashes, onehots[i]) for i in range(len(onehots))]
         return
+        print(signatures)
         del shingles_set, vocab, onehots, hashes
         gc.collect()
         for i in range(self.b):
