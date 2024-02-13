@@ -19,20 +19,24 @@ class LSH:
     # candidate_pairs = list()
     pairs = {}
     vocab = {}
-    def __init__(self, sentences, b=5, size_of_hash_functions=20):
+    def __init__(self, sentences, b=5, size_of_hash_functions=20, k=None):
         self.sentences = sentences
         self.b = b
+        self.k = k
         self.size_of_hash_functions = size_of_hash_functions
         for _ in range(b):
             self.buckets.append({}) # append an empty set in each bucket
 
-    def build_shingles(self, sentence: str, k=8):
+    def build_shingles(self, sentence: str):
         """Take a sentence and tokenize/create shingles of size k out of it. """
+        k = self.k
+        if k is None:
+            tokens = sentence.split(' ')
+            return set(tokens)
+        # otherwise
         shingles = []
-        tokens = sentence.split(' ')
-        # for i in range(len(sentence) - k):
-        #     shingles.append(sentence[i:i+k])
-        return set(tokens)
+        for i in range(len(sentence) - k):
+            shingles.append(sentence[i:i+k])
         return set(shingles) # shingles on such a big file should be illegal
 
     def build_vocab(self, shingle_sets: list):
@@ -63,33 +67,26 @@ class LSH:
             vec[idx] = 1
         return vec
 
-    def _create_hash(self, vocab: dict):
+    def _create_hash(self, length):
         """Create a random permutation of the elements' indices, essentially.
         For a vocabulary of size 6, something like this would be created:
         [5 3 4 2 6 1]"""
-        length = len(vocab.keys())
+        # length = len(vocab.keys())
         # permutation = np.random.permutation(length)
         return np.random.permutation(length) + 1
 
-    def build_hashes(self, vocab: dict, n_hash_functions:int):
-        """
-        NOTE: The following matrix should be Transposed! 
-            it works the same this way though
-        
-        Create a 2D array of hash values (random permutations of arrays) like so:
+    def build_hashes(self, length: int, n_hash_functions:int):
+        """Create a 2D array of hash values (random permutations of arrays) like so:
         Say we have a vocabulary of size 5 and we want 2 hash functions
-        [[3 2]
-         [1 3]
-         [5 1]
-         [2 4]
-         [4 5]]"""
-        length = len(vocab.keys())
+        [[3 1 5 2 4]
+         [2 3 1 4 5]]"""
+        # length = len(vocab.keys())
         
         # create a 2D array where each row is a number coming from the random permutation
         # and each column is a different hash function
-        hashes = np.empty((length ,n_hash_functions), dtype=np.uint64)
-        for j in range(n_hash_functions):
-            hashes[: , j] = self._create_hash(vocab) 
+        hashes = np.empty((n_hash_functions, length), dtype=np.uint64)
+        for i in range(n_hash_functions):
+            hashes[i , :] = self._create_hash(length) 
         # print(hashes)
         return hashes
 
@@ -98,20 +95,20 @@ class LSH:
         and find the minimum value in the hashed value, that simultaneously has a 1 in the token vector. 
         For example: for the given 
         hash values
-        [[3 2]      and the following   [[1]
-         [1 3]      token vector         [0]
-         [5 1]                           [0]
-         [2 4]                           [1]
-         [4 5]]                          [0]]
-        we would get
+        [[3 1 5 2 4]                    [[1]
+         [2 3 1 4 5]]                    [0]
+                                         [0]
+                                         [1]
+                                         [0]]
+        we would get the following signature:
         [2 2]
         """
         non_zero_indices = np.nonzero(token_vector)[0].tolist()
         # based on these indices, which point only to 1s in the shingle/token vector
         # take the values from the hash value that also have 1s in the token vector
-        relevant_shingles = hashes[non_zero_indices, : ]
+        relevant_shingles = hashes[:, non_zero_indices]
         # now, the signature 
-        signature = np.min(relevant_shingles, axis=0)
+        signature = np.min(relevant_shingles, axis=1)
         return signature.tolist()
         return self.vec_to_int(signature)
 
@@ -132,7 +129,7 @@ class LSH:
         for i in range(0, length, r):
             # work directly with integers as they're more memory efficient
             # and we NEED MEMORY
-            subvectors.append(vec_to_int(signature[i:i+r]))
+            subvectors.append(self.vec_to_int(signature[i:i+r]))
         return np.stack(subvectors)
 
     def _make_subvector(self, signature, current_bucket: int):
@@ -176,10 +173,10 @@ class LSH:
             self.expand_vocab(shingles_set)
         # 13 seconds to create shingles, 7 GB of RAM
         # shingles_set = [self.build_shingles(sentence) for sentence in self.sentences]
-        
+        # print('size of vocab: ', len(self.vocab.keys())) # size of vocab: 643974
         print('done.')
         print('creating hashes')
-        hashes = self.build_hashes(self.vocab, self.size_of_hash_functions)
+        hashes = self.build_hashes(len(self.vocab), self.size_of_hash_functions)
         print('done.')
 
         print('creating signatures')
