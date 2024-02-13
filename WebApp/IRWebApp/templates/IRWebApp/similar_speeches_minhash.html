@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Similar Speeches based on minhash</title>
+</head>
+
+<body>
+    <h1>Find similar speech</h1>
+    <form method="post" action="{% url 'similar_speeches_minhash' %}">
+        {% csrf_token %}
+        <input type="number" name="requested_speech_id" placeholder="Enter speech ID" required>
+        <button type="submit">Search</button>
+    </form>
+    <!-- Uncomment the code below to unveil the Create M-Tree button
+         in case you want to recreate the M-Tree from scratch. -->
+    <h1>Create Tree</h1>
+    <form method="post" action="{% url 'similar_speeches_minhash' %}">
+        {% csrf_token %}
+        <input type="hidden" name="create_minhash">
+        <button type="submit">Create Minhash key:value pairs</button>
+    </form>
+    
+    {% if empty == True%}
+        <h1>No similar speeches found</h1>
+    {% elif data %}
+    <h1>Similar Speeches based on minhash</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Member name</th>
+                <th>Speech</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.member_name }}</td>
+                <td>{{ item.processed_speech }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+    <!-- <table>
+        <tr>
+            <th>Result</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.member_name }}</td>
+            <td>{{ result.political_party }}</td>
+            <td>{{ result.speech }}</td>
+        </tr>
+        {% endfor %}
+    </table> -->
+    {% endif %}
+    <h2>Available indices for looking up</h2>
+    <p>{% for speechID in d_keys %}
+        {{ speechID }},
+    {% endfor %}
+    </p>
+
+</body>
+
+</html>

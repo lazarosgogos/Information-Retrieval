@@ -209,6 +209,15 @@ class LSH:
             
         # print(set(self.candidate_pairs))
         return self.pairs
+    
+    def create_minhash(self, filename='minhash.pkl'):
+        print('saving the minhash dictionary')
+        import pickle
+        pairs = self.perform_LSH()
+        with open(filename,'wb') as fo:
+            pickle.dump(pairs, fo)
+        print('done saving dictionary')
+
 
 # lsh = LSH(sentences, b=2, size_of_hash_functions=6)
 # lsh.perform_LSH()

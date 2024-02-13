@@ -3,7 +3,7 @@ from IRWebApp.models import PartyKeywords, SimilarMembers, MemberKeywords, Speec
 import pandas as pd
 from .forms import SearchForm
 from .search import query_copy
-from .similar_speeches import tree_search, tree_create
+from .similar_speeches import tree_search, tree_create, minhash_create, minhash_search
 
 # Create your views here.
 
@@ -124,3 +124,42 @@ def similar_speeches(request):
     
     # return render(request, 'IRWebApp/search.html', {'results': ordered_results})
     return render(request, 'IRWebApp/similar_speeches.html', {'data': data_list})
+
+def similar_speeches_minhash(request):
+    # data = SimilarSpeeches.objects.all()
+    # speeches = SimilarSpeeches.objects.all().values_list('speech', flat=True)
+    # speeches = list(speeches)
+    
+    d_keys = minhash_search.get_speech_keys()
+
+    empty = False
+    indices = []
+    if request.method == "POST":
+        if ('create_minhash' in request.POST):
+            print('Loading processed speeches only..')
+            processed_speeches = Speech.objects.all().values_list('processed_speech', flat=True)
+            processed_speeches = list(processed_speeches)
+            print('Done loading processed speeches. Proceeding to make minhash operations.')
+            minhash_create.create_minhash(processed_speeches, b=12, n_of_hash_functions=204)
+            
+        else:
+            requested_speech_id = int(request.POST.get('requested_speech_id')) 
+            # k = int(request.POST.get('k'))
+            # search_query = request.POST.get('query')
+            indices = minhash_search.get_similar_speeches(requested_speech_id)
+            if indices is not None:
+                indices.insert(0, requested_speech_id)
+                indices = [i+1 for i in indices] # +1 because the indexes differ 
+    # print(len(indices))
+    # Get the entries of the queryset with pk = the indices of the search sorted.
+    if indices is not None:
+        data = Speech.objects.all().filter(pk__in = indices)
+        data_list = list(data)
+    else:
+        data_list = []
+        empty = True
+
+    
+    # return render(request, 'IRWebApp/search.html', {'results': ordered_results})
+    return render(request, 'IRWebApp/similar_speeches_minhash.html', {'data': data_list, 'empty':empty, 'd_keys':d_keys})
+
