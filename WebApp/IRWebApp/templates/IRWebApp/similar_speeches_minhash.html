@@ -7,7 +7,11 @@
 </head>
 
 <body>
-    <h1>Find similar speech</h1>
+    <a href="/"><h2>Back home</h2></a>
+    <a href="/similar_speeches_minhash/"><h1>Find similar speech</h1></a>
+    <h5>The following similarities are pre-calculated, with a threshold of 85% similarity and
+        204 random permutations. Hence, the bucket size is 12 and the row size is 17.
+    </h5>
     <form method="post" action="{% url 'similar_speeches_minhash' %}">
         {% csrf_token %}
         <input type="number" name="requested_speech_id" placeholder="Enter speech ID" required>
