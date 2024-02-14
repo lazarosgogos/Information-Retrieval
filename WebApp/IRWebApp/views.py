@@ -4,6 +4,7 @@ import pandas as pd
 from .forms import SearchForm
 from .search import query_copy
 from .similar_speeches import tree_search, tree_create, minhash_create, minhash_search
+from .summarizer import summarizer as summarizer_LM
 
 # Create your views here.
 
@@ -162,4 +163,34 @@ def similar_speeches_minhash(request):
     
     # return render(request, 'IRWebApp/search.html', {'results': ordered_results})
     return render(request, 'IRWebApp/similar_speeches_minhash.html', {'data': data_list, 'empty':empty, 'd_keys':d_keys})
+
+def summarizer(request):
+    # data = SimilarSpeeches.objects.all()
+    # speeches = SimilarSpeeches.objects.all().values_list('speech', flat=True)
+    # speeches = list(speeches)
+    
+
+    empty = False
+    original_speech = None
+    summary = None
+    if request.method == "POST":
+        requested_speech_id = int(request.POST.get('requested_speech_id')) 
+        max_length_str = str(request.POST.get('max_length')).strip()
+        if max_length_str == '':
+            max_length = 512
+        else:
+            max_length = int(max_length_str)
+        # k = int(request.POST.get('k'))
+        # search_query = request.POST.get('query')
+        original_speech = str(Speech.objects.get(pk = requested_speech_id).speech)
+        summary = summarizer_LM.generate_summary(original_speech, max_length)
+    # print(len(indices))
+    # Get the entries of the queryset with pk = the indices of the search sorted.
+    if original_speech is None: # if no speech was found
+        empty = True
+
+    
+    # return render(request, 'IRWebApp/search.html', {'results': ordered_results})
+    return render(request, 'IRWebApp/summarizer.html', {'original_speech': original_speech,
+                                                                      'summary': summary, 'empty':empty})
 

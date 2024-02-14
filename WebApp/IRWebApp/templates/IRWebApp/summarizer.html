@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Summarizer</title>
+</head>
+
+<body>
+    <a href="/">
+        <h2>Back home</h2>
+    </a>
+    <a href="/summarizer/">
+        <h1>Summarize speech</h1>
+    </a>
+    <h5>The summarizer model was taken from
+        <a href="https://huggingface.co/kriton/greek-text-summarization">here</a>.
+    </h5>
+    <form method="POST" action="{% url 'summarizer' %}">
+        {% csrf_token %}
+        <input type="number" name="requested_speech_id" placeholder="Enter speech ID" required>
+        <input type="number" name="max_length" placeholder="Enter max length of summary - defaults to 512">
+        <button type="submit">Summarize</button>
+    </form>
+    <!-- Uncomment the code below to unveil the Create M-Tree button
+         in case you want to recreate the M-Tree from scratch. -->
+    <!-- <h1>Create Tree</h1>
+    <form method="post" action="{% url 'summarizer' %}">
+        {% csrf_token %}
+        <input type="hidden" name="create_minhash">
+        <button type="submit">Create Minhash key:value pairs</button>
+    </form> -->
+
+    {% if empty == True%}
+    <h1>No speech found</h1>
+    {% else %}
+    <h1>Similar Speeches based on minhash</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Original speech</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ original_speech }}</td>
+                <td>{{ summary }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% endif %}
+    <!-- <h2>Available indices for looking up</h2>
+    <p>{% for speechID in d_keys %}
+        {{ speechID }},
+    {% endfor %}
+    </p> -->
+
+</body>
+
+</html>
