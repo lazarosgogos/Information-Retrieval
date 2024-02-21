@@ -15,16 +15,16 @@ Make sure you have also downloaded the `db.sqlite3` database file and placed it 
 ## Building the database from scratch
 
 Firstly, grab the files from the following links.
-https://drive.google.com/file/d/1za9X4IN6Wmq9Y8JGGrOymGy0MCnWGT4D/view?usp=drive_link  
-https://drive.google.com/file/d/1w0akuQEmv4B78nWVePTCZX8JH_O5PUXD/view?usp=drive_link  
-https://drive.google.com/file/d/1hCXb_xMyYW79IGC5pGmNSZ6KivuDoYlg/view?usp=drive_link  
-https://drive.google.com/file/d/1fHJaMZLjgpphr4-9qjqfYD3Zy0i1SJhT/view?usp=drive_link  
-https://drive.google.com/file/d/1r7pto0PQI2LnQdQqXOn_LQGtIUk7VD46/view?usp=sharing  
-SQLite database: https://drive.google.com/file/d/1kLTZKV3YJu2LKedzii3Qrmao4_oYIDCW/view?usp=sharing  
+[inverted_catalogfinal_string](https://drive.google.com/file/d/1za9X4IN6Wmq9Y8JGGrOymGy0MCnWGT4D/view?usp=drive_link)  
+[members_keywordsfinal.csv](https://drive.google.com/file/d/1w0akuQEmv4B78nWVePTCZX8JH_O5PUXD/view?usp=drive_link)  
+[party_keywordsfinal.csv](https://drive.google.com/file/d/1hCXb_xMyYW79IGC5pGmNSZ6KivuDoYlg/view?usp=drive_link)  
+[member_similaritiesfinal.json](https://drive.google.com/file/d/1fHJaMZLjgpphr4-9qjqfYD3Zy0i1SJhT/view?usp=drive_link)  
+[per_speech_keywords.pkl](https://drive.google.com/file/d/1r7pto0PQI2LnQdQqXOn_LQGtIUk7VD46/view?usp=sharing)  
+SQLite database: [db.sqlite3](https://drive.google.com/file/d/1kLTZKV3YJu2LKedzii3Qrmao4_oYIDCW/view?usp=sharing)  
 
-These files must be placed in the WebApp directory.
+These files must be placed in the WebApp directory.  
 You will need to run the following python commands in order to create the objects for Django to run.  
-`cd ./WebApp` if not already in the WebApp directory  
+`cd ~/anacoda/IRProject/WebApp` if not already in the WebApp directory  
 `python inverted_catalog.py`  
 `python import_keywords_members.py`  
 `python import_keywords_party.py`  
