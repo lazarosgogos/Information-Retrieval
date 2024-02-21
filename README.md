@@ -18,6 +18,7 @@ https://drive.google.com/file/d/1w0akuQEmv4B78nWVePTCZX8JH_O5PUXD/view?usp=drive
 https://drive.google.com/file/d/1hCXb_xMyYW79IGC5pGmNSZ6KivuDoYlg/view?usp=drive_link
 https://drive.google.com/file/d/1fHJaMZLjgpphr4-9qjqfYD3Zy0i1SJhT/view?usp=drive_link
 https://drive.google.com/file/d/1r7pto0PQI2LnQdQqXOn_LQGtIUk7VD46/view?usp=sharing
+SQLite database: https://drive.google.com/file/d/1kLTZKV3YJu2LKedzii3Qrmao4_oYIDCW/view?usp=sharing
 
 These files must be placed in the WebApp directory.
 You will need to run the following python commands in order to create the objects for Django to run.
