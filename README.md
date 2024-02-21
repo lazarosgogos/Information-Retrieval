@@ -14,8 +14,8 @@ Make sure you have also downloaded the `db.sqlite3` database file and placed it 
 
 ## Building the database from scratch
 
-Firstly, grab the files from the following links.
-[inverted_catalogfinal_string](https://drive.google.com/file/d/1za9X4IN6Wmq9Y8JGGrOymGy0MCnWGT4D/view?usp=drive_link)  
+Firstly, grab the files from the following links.  
+[inverted_catalogfinal_string.json](https://drive.google.com/file/d/1za9X4IN6Wmq9Y8JGGrOymGy0MCnWGT4D/view?usp=drive_link)  
 [members_keywordsfinal.csv](https://drive.google.com/file/d/1w0akuQEmv4B78nWVePTCZX8JH_O5PUXD/view?usp=drive_link)  
 [party_keywordsfinal.csv](https://drive.google.com/file/d/1hCXb_xMyYW79IGC5pGmNSZ6KivuDoYlg/view?usp=drive_link)  
 [member_similaritiesfinal.json](https://drive.google.com/file/d/1fHJaMZLjgpphr4-9qjqfYD3Zy0i1SJhT/view?usp=drive_link)  
