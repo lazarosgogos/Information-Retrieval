@@ -10,7 +10,9 @@ To do so run the following command:
 
 Then navigate to the project folder, for example `~/anacoda/IRProject/` and place all the files included in this github repo.
 
-Make sure you have also downloaded the `db.sqlite3` database file and placed it into the PROJECT_DIR/WebApp directory, if you don't want to build the database from scratch (which would take hours).
+Make sure you have also downloaded the `db.sqlite3` database file and placed it into the PROJECT_DIR/WebApp directory, if you don't want to build the database from scratch (which would take hours).  
+
+The speeches csv file should be created using data_preprocessing_opt.ipynb  
 
 ## Building the database from scratch
 
