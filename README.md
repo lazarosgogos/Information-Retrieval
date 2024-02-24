@@ -12,10 +12,10 @@ Then navigate to the project folder, for example `~/anacoda/IRProject/` and plac
 
 Make sure you have also downloaded the `db.sqlite3` database file and placed it into the PROJECT_DIR/WebApp directory, if you don't want to build the database from scratch (which would take hours).  
 
-The speeches csv file should be created using data_preprocessing_opt.ipynb  
-The csv file needed can be found [here](https://zenodo.org/records/4311577/files/Greek_Parliament_Proceedings_1989_2020.zip?download=1), sourced from this [GitHub repo](https://github.com/iMEdD-Lab/Greek_Parliament_Proceedings/tree/master?tab=readme-ov-file).
-
 ## Building the database from scratch
+
+The speeches csv file should be created using data_preprocessing_opt.ipynb  
+The csv file needed can be found [here](https://zenodo.org/records/4311577/files/Greek_Parliament_Proceedings_1989_2020.zip?download=1), sourced from this [GitHub repo](https://github.com/iMEdD-Lab/Greek_Parliament_Proceedings/tree/master?tab=readme-ov-file), and should be placed in your PROJECT_DIR/ directory.
 
 Firstly, grab the files from the following links.  
 [inverted_catalogfinal_string.json](https://drive.google.com/file/d/1za9X4IN6Wmq9Y8JGGrOymGy0MCnWGT4D/view?usp=drive_link)  
