@@ -1,6 +1,10 @@
-# IRProject
+# The Information Retrieval from speeches project
 
-This project aims to extract useful information from speeches taken from the Greek Parliament in the period of 1989-2020.
+This project aims to extract useful information from speeches taken from the Greek Parliament in the period of 1989-2020. Using various techniques (stopwords removal, SVD, keyword extraction, MinHash and SimHash similarity calculation, text summarization using pretrained Transformers) and a web interface based on django, the user can perform actions such as a deep keyword search, a quick keyword search, find similar speeches based on a speech, find which keywords describe a member or a party per year, browse through similar parliament members or summarize any speech to the desired token length. 
+
+# Example Image
+![A deep search based on the 'ΣΚΑΝΔΑΛΟ' keyword](https://github.com/user-attachments/assets/1c7becd5-56d5-4d70-954a-555655a23a33)
+
 
 # How to run
 
